@@ -284,9 +284,19 @@ def show_update_collection():
     # ── Customer Table with inline update ──
     st.divider()
     st.markdown("#### 👤 Customer List")
+    st.caption("All customers are editable — click any row to update or change a previously saved status.")
 
-    show_pending_only = st.checkbox("Show only pending (not updated) customers", value=True)
-    display_df = customers_df[customers_df["PaymentStatus"].isna()] if show_pending_only else customers_df
+    col_f1, col_f2 = st.columns(2)
+    with col_f1:
+        show_pending_only = st.checkbox("Show only pending (not updated)", value=False)
+    with col_f2:
+        show_paid_only = st.checkbox("Show only Paid", value=False)
+
+    display_df = customers_df.copy()
+    if show_pending_only:
+        display_df = display_df[display_df["PaymentStatus"].isna()]
+    elif show_paid_only:
+        display_df = display_df[display_df["PaymentStatus"] == "Paid"]
 
     if display_df.empty:
         st.success("✅ All customers have been updated!")
@@ -301,10 +311,20 @@ def show_update_collection():
         cur_status = row["PaymentStatus"]
         cur_window = row["CollectionWindow"]
 
+        # Icon + label based on status
+        if pd.isna(cur_status):
+            icon = "⏳"
+            status_label = "Not Updated"
+        elif cur_status == "Paid":
+            icon = "✅"
+            status_label = "Paid"
+        else:
+            icon = "❌"
+            status_label = "Not Paid"
+
         with st.expander(
-            f"{'✅' if pd.notna(cur_status) else '⏳'} {cust_name} "
-            f"| Invoice: ₹{invoice:,.0f} | Cash: ₹{cash:,.0f} | UPI: ₹{upi:,.0f}"
-            + (f" | Status: **{cur_status}**" if pd.notna(cur_status) else " | Not Updated"),
+            f"{icon} {cust_name} | Invoice: ₹{invoice:,.0f} | Cash: ₹{cash:,.0f}"
+            f" | UPI: ₹{upi:,.0f} | {status_label}",
             expanded=pd.isna(cur_status),
         ):
             col1, col2 = st.columns(2)
