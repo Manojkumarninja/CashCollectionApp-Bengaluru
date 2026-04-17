@@ -339,7 +339,8 @@ def show_update_collection():
                 key=f"status_{order_id}",
             )
 
-            if new_status == "Paid":
+            # Show "Time of Delivery" only when first-time marking as Paid (cur was Not Paid)
+            if new_status == "Paid" and cur_status != "Paid":
                 window_opts = COLLECTION_WINDOW_OPT
             else:
                 window_opts = [w for w in COLLECTION_WINDOW_OPT if w != "Time of Delivery"]
