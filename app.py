@@ -335,16 +335,15 @@ def show_update_collection():
                 st.info(f"💳 UPI/Wallet payment only (₹{upi:,.0f}) — no cash collection required.")
                 continue
 
-            col1, col2 = st.columns(2)
-            with col1:
-                status_idx = PAYMENT_STATUS_OPTIONS.index(cur_status) if cur_status in PAYMENT_STATUS_OPTIONS else 0
-                new_status = st.selectbox(
-                    "Payment Status",
-                    PAYMENT_STATUS_OPTIONS,
-                    index=status_idx,
-                    key=f"status_{order_id}",
-                )
-            with col2:
+            status_idx = PAYMENT_STATUS_OPTIONS.index(cur_status) if cur_status in PAYMENT_STATUS_OPTIONS else 0
+            new_status = st.selectbox(
+                "Payment Status",
+                PAYMENT_STATUS_OPTIONS,
+                index=status_idx,
+                key=f"status_{order_id}",
+            )
+
+            if new_status == "Not Paid":
                 window_idx = COLLECTION_WINDOW_OPT.index(cur_window) if cur_window in COLLECTION_WINDOW_OPT else 0
                 new_window = st.selectbox(
                     "Collection Window",
@@ -352,6 +351,8 @@ def show_update_collection():
                     index=window_idx,
                     key=f"window_{order_id}",
                 )
+            else:
+                new_window = None
 
             if st.button("💾 Save", key=f"save_{order_id}", type="primary"):
                 try:
