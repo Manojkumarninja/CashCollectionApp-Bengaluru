@@ -339,18 +339,20 @@ def show_update_collection():
                 key=f"status_{order_id}",
             )
 
-            # First-time Paid → silently set Time of Delivery, no dropdown shown
+            # First-time Paid (cur=Not Paid → new=Paid): show all options incl. Time of Delivery
+            # All other cases (re-edit Paid, or any Not Paid): exclude Time of Delivery
             if new_status == "Paid" and cur_status != "Paid":
-                new_window = "Time of Delivery"
+                window_opts = COLLECTION_WINDOW_OPT
             else:
                 window_opts = [w for w in COLLECTION_WINDOW_OPT if w != "Time of Delivery"]
-                window_idx = window_opts.index(cur_window) if cur_window in window_opts else 0
-                new_window = st.selectbox(
-                    "Collection Window",
-                    window_opts,
-                    index=window_idx,
-                    key=f"window_{order_id}",
-                )
+
+            window_idx = window_opts.index(cur_window) if cur_window in window_opts else 0
+            new_window = st.selectbox(
+                "Collection Window",
+                window_opts,
+                index=window_idx,
+                key=f"window_{order_id}",
+            )
 
             if st.button("💾 Save", key=f"save_{order_id}", type="primary"):
                 try:
