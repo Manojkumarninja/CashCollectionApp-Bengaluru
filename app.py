@@ -331,6 +331,11 @@ def show_update_collection():
                 st.info(f"💳 UPI/Wallet payment only (₹{upi:,.0f}) — no cash collection required.")
                 continue
 
+            if cur_status == "Paid":
+                st.success(f"✅ Marked as **Paid** | Collection Window: {cur_window or '—'}")
+                continue
+
+            # Not yet Paid — allow update
             status_idx = PAYMENT_STATUS_OPTIONS.index(cur_status) if cur_status in PAYMENT_STATUS_OPTIONS else 0
             new_status = st.selectbox(
                 "Payment Status",
@@ -339,9 +344,9 @@ def show_update_collection():
                 key=f"status_{order_id}",
             )
 
-            # First-time Paid (cur=Not Paid → new=Paid): show all options incl. Time of Delivery
-            # All other cases (re-edit Paid, or any Not Paid): exclude Time of Delivery
-            if new_status == "Paid" and cur_status != "Paid":
+            # Selecting Paid for first time: show all options incl. Time of Delivery
+            # Not Paid: exclude Time of Delivery
+            if new_status == "Paid":
                 window_opts = COLLECTION_WINDOW_OPT
             else:
                 window_opts = [w for w in COLLECTION_WINDOW_OPT if w != "Time of Delivery"]
