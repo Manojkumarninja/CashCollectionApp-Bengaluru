@@ -344,10 +344,11 @@ def show_update_collection():
             )
 
             if new_status == "Not Paid":
-                window_idx = COLLECTION_WINDOW_OPT.index(cur_window) if cur_window in COLLECTION_WINDOW_OPT else 0
+                not_paid_windows = [w for w in COLLECTION_WINDOW_OPT if w != "Time of Delivery"]
+                window_idx = not_paid_windows.index(cur_window) if cur_window in not_paid_windows else 0
                 new_window = st.selectbox(
                     "Collection Window",
-                    COLLECTION_WINDOW_OPT,
+                    not_paid_windows,
                     index=window_idx,
                     key=f"window_{order_id}",
                 )
