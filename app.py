@@ -327,7 +327,7 @@ def show_update_collection():
             f" | UPI: ₹{upi:,.0f} | {status_label}",
             expanded=(cur_status != "Paid"),
         ):
-                if cur_status == "Paid":
+            if cur_status == "Paid":
                 st.success(f"✅ Marked as **Paid** | Collection Window: {cur_window or '—'}")
                 continue
 
