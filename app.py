@@ -344,9 +344,9 @@ def show_update_collection():
                 key=f"status_{order_id}",
             )
 
-            # Selecting Paid for first time: show all options incl. Time of Delivery
-            # Not Paid: exclude Time of Delivery
-            if new_status == "Paid":
+            # Show Time of Delivery only when record was never touched (NULL) and user selects Paid
+            # If previously set to Not Paid, or selecting Not Paid → exclude Time of Delivery
+            if new_status == "Paid" and pd.isna(cur_status):
                 window_opts = COLLECTION_WINDOW_OPT
             else:
                 window_opts = [w for w in COLLECTION_WINDOW_OPT if w != "Time of Delivery"]
