@@ -325,7 +325,7 @@ def show_update_collection():
         with st.expander(
             f"{icon} {cust_name} | Invoice: ₹{invoice:,.0f} | Cash: ₹{cash:,.0f}"
             f" | UPI: ₹{upi:,.0f} | {status_label}",
-            expanded=pd.isna(cur_status),
+            expanded=(cur_status != "Paid"),
         ):
             col1, col2 = st.columns(2)
             with col1:
